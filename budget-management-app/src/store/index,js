@@ -1,0 +1,17 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
+import auth from './modules/auth';
+import mainAccount from './modules/mainAccount';
+import subaccounts from './modules/subaccounts';
+import transactions from './modules/transactions';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  modules: {
+    auth,
+    mainAccount,
+    subaccounts,
+    transactions
+  }
+});

@@ -1,0 +1,72 @@
+const state = {
+    subaccounts: []
+};
+
+const mutations = {
+    SET_SUBACCOUNTS(state, subaccounts) {
+        state.subaccounts = subaccounts;
+    },
+    ADD_SUBACCOUNT(state, subaccount) {
+        state.subaccounts.push(subaccount);
+    },
+    UPDATE_SUBACCOUNT(state, updatedSubaccount) {
+        const index = state.subaccounts.findIndex(sub => sub.id === updatedSubaccount.id);
+        if (index !== -1) {
+            state.subaccounts.splice(index, 1, updatedSubaccount);
+        }
+    },
+    DELETE_SUBACCOUNT(state, subaccountId) {
+        state.subaccounts = state.subaccounts.filter(sub => sub.id !== subaccountId);
+    }
+};
+
+const actions = {
+    async fetchSubaccounts({ commit }) {
+        try {
+            // Perform API request to fetch subaccounts data
+            const response = await axios.get('/api/subaccounts');
+            commit('SET_SUBACCOUNTS', response.data);
+        } catch (error) {
+            console.error('Error fetching subaccounts:', error);
+        }
+    },
+    async addSubaccount({ commit }, subaccount) {
+        try {
+            // Perform API request to add a new subaccount
+            const response = await axios.post('/api/subaccounts', subaccount);
+            commit('ADD_SUBACCOUNT', response.data);
+        } catch (error) {
+            console.error('Error adding subaccount:', error);
+        }
+    },
+    async updateSubaccount({ commit }, updatedSubaccount) {
+        try {
+            // Perform API request to update an existing subaccount
+            await axios.put(`/api/subaccounts/${updatedSubaccount.id}`, updatedSubaccount);
+            commit('UPDATE_SUBACCOUNT', updatedSubaccount);
+        } catch (error) {
+            console.error('Error updating subaccount:', error);
+        }
+    },
+    async deleteSubaccount({ commit }, subaccountId) {
+        try {
+            // Perform API request to delete a subaccount
+            await axios.delete(`/api/subaccounts/${subaccountId}`);
+            commit('DELETE_SUBACCOUNT', subaccountId);
+        } catch (error) {
+            console.error('Error deleting subaccount:', error);
+        }
+    }
+};
+
+const getters = {
+    subaccounts: state => state.subaccounts
+};
+
+export default {
+    namespaced: true,
+    state,
+    mutations,
+    actions,
+    getters
+};

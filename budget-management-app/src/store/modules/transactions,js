@@ -1,0 +1,72 @@
+const state = {
+    transactions: []
+};
+
+const mutations = {
+    SET_TRANSACTIONS(state, transactions) {
+        state.transactions = transactions;
+    },
+    ADD_TRANSACTION(state, transaction) {
+        state.transactions.push(transaction);
+    },
+    UPDATE_TRANSACTION(state, updatedTransaction) {
+        const index = state.transactions.findIndex(t => t.id === updatedTransaction.id);
+        if (index !== -1) {
+            state.transactions.splice(index, 1, updatedTransaction);
+        }
+    },
+    DELETE_TRANSACTION(state, transactionId) {
+        state.transactions = state.transactions.filter(t => t.id !== transactionId);
+    }
+};
+
+const actions = {
+    async fetchTransactions({ commit }) {
+        try {
+            // Perform API request to fetch transactions
+            const response = await axios.get('/api/transactions');
+            commit('SET_TRANSACTIONS', response.data);
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+        }
+    },
+    async addTransaction({ commit }, transaction) {
+        try {
+            // Perform API request to add a transaction
+            const response = await axios.post('/api/transactions', transaction);
+            commit('ADD_TRANSACTION', response.data);
+        } catch (error) {
+            console.error('Error adding transaction:', error);
+        }
+    },
+    async updateTransaction({ commit }, updatedTransaction) {
+        try {
+            // Perform API request to update a transaction
+            await axios.put(`/api/transactions/${updatedTransaction.id}`, updatedTransaction);
+            commit('UPDATE_TRANSACTION', updatedTransaction);
+        } catch (error) {
+            console.error('Error updating transaction:', error);
+        }
+    },
+    async deleteTransaction({ commit }, transactionId) {
+        try {
+            // Perform API request to delete a transaction
+            await axios.delete(`/api/transactions/${transactionId}`);
+            commit('DELETE_TRANSACTION', transactionId);
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+        }
+    }
+};
+
+const getters = {
+    transactions: state => state.transactions
+};
+
+export default {
+    namespaced: true,
+    state,
+    mutations,
+    actions,
+    getters
+};
